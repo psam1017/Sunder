@@ -4,9 +4,10 @@ import net.sunder.english.domain.Teacher;
 
 public interface TeacherService {
 
-    boolean isExistTeacherId(String teacherId);
-    void createAccount(Teacher teacher);
-    Long login(Teacher teacher);
-    void updateAccount(Teacher teacher);
+    boolean isUniqueTeacherId(String teacherId);
+    void createAccount(String loginId, String password, String teacherName);
+    Teacher login(String loginId, String password);
+    void updateAccount(Long teacherId, String teacherName, String password);
     void withdraw(Long teacherId);
+    Teacher getTeacher(Long teacherId);
 }

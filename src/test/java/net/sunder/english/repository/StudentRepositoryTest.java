@@ -3,8 +3,6 @@ package net.sunder.english.repository;
 import lombok.extern.slf4j.Slf4j;
 import net.sunder.english.domain.Score;
 import net.sunder.english.domain.Student;
-import net.sunder.english.domain.enumtype.ContentType;
-import net.sunder.english.repository.jpa.StudentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

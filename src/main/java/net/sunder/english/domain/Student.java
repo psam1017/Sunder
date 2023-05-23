@@ -3,6 +3,8 @@ package net.sunder.english.domain;
 import lombok.Getter;
 import lombok.Setter;
 import net.sunder.english.domain.enumtype.Grade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,22 +28,18 @@ public class Student {
     @Column(name = "student_name", nullable = false)
     private String studentName;
 
-    // EnumType 사용 예제
-    // https://lng1982.tistory.com/280
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "grade", nullable = false)
     private Grade grade;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Teacher teacher;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     List<Score> scores = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student")
-    List<WordWrong> wordWrongs = new ArrayList<>();
-
-    @OneToMany(mappedBy = "student")
-    List<SentenceWrong> sentenceWrongs = new ArrayList<>();
+    @OneToMany(mappedBy = "student", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    List<ContentWrong> contentWrongs = new ArrayList<>();
 }

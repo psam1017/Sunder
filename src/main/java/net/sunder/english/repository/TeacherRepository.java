@@ -1,4 +1,4 @@
-package net.sunder.english.repository.jpa;
+package net.sunder.english.repository;
 
 import net.sunder.english.domain.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;

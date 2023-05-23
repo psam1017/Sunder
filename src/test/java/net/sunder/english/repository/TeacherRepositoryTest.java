@@ -3,7 +3,6 @@ package net.sunder.english.repository;
 import lombok.extern.slf4j.Slf4j;
 import net.sunder.english.domain.*;
 import net.sunder.english.domain.enumtype.ContentType;
-import net.sunder.english.repository.jpa.TeacherRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @Sql(scripts = {"classpath:sql/dummy.sql"})
 class TeacherRepositoryTest {
-
-    /*
-    JUnit5 에서 의존성 주입은 @Autowired 로 해야 하는 이유
-    https://pinokio0702.tistory.com/189
-
-    findAny 는 탐색한 첫 번째 요소를 반환하고, findFirst 는 탐색된 모든 요소 중 순서상 첫 번째를 반환한다.
-    https://codechacha.com/ko/java8-stream-difference-findany-findfirst
-     */
 
     private final TeacherRepository teacherRepository;
 
@@ -138,7 +129,7 @@ class TeacherRepositoryTest {
 
     @Test
     @DisplayName("선생님이 한 교재의 모든 단어 목록을 조회할 수 있다")
-    void findAllWordByBookTest() {
+    void findAllContentByBookTest() {
         // given
         Teacher teacher = new Teacher();
         teacher.setTeacherId("teacherId");
@@ -150,10 +141,10 @@ class TeacherRepositoryTest {
         Optional<Book> bookOptional = books.stream()
                 .filter(book -> book.getTitle().equals("book1") && book.getContentType().equals(ContentType.WORD))
                 .findAny();
-        List<Word> words = bookOptional.orElseThrow(NoSuchElementException::new).getWords();
+        List<Content> contents = bookOptional.orElseThrow(NoSuchElementException::new).getContents();
 
         // then
-        assertThat(words.size()).isEqualTo(10);
+        assertThat(contents.size()).isEqualTo(10);
     }
 
     @Test

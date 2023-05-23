@@ -4,11 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.sunder.english.domain.Book;
 import net.sunder.english.domain.Student;
 import net.sunder.english.domain.Teacher;
-import net.sunder.english.domain.Word;
+import net.sunder.english.domain.Content;
 import net.sunder.english.domain.enumtype.ContentType;
-import net.sunder.english.repository.jpa.BookRepository;
-import net.sunder.english.repository.jpa.StudentRepository;
-import net.sunder.english.repository.jpa.TeacherRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,17 +37,17 @@ class BookRepositoryTest {
     }
 
     @Test
-    @DisplayName("교재명, 단원명, 콘텐츠 유형, 교사 id에 맞는 교과서를 찾을 수 있다")
+    @DisplayName("교재명, 단원명, 콘텐츠 유형, 교사 id에 맞는 교재를 찾을 수 있다")
     void findOneScoreByOneStudentAndOneBook() {
         // given
         Teacher teacher = new Teacher();
         teacher.setTeacherId("teacherId");
         teacher.setPassword("1234");
-        Teacher foundTeacher = teacherRepository.findOne(Example.of(teacher)).orElseThrow(NoSuchElementException::new);
+        Teacher foundTeacher = teacherRepository.findOne(Example.of(teacher)).orElseThrow();
 
         // when
         Book foundBook = bookRepository.findByBookInfo("book1", "chapter1", ContentType.WORD, foundTeacher.getId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         // then
         assertThat(foundBook).isNotNull();
@@ -65,12 +61,11 @@ class BookRepositoryTest {
         student.setStudentId("studentId1");
         student.setPassword("password1");
         Optional<Student> studentOptional = studentRepository.findOne(Example.of(student));
-        Student foundStudent = studentOptional.orElseThrow(NoSuchElementException::new);
+        Student foundStudent = studentOptional.orElseThrow();
 
         // when
         Long teacherId = foundStudent.getTeacher().getId();
-        List<Book> books = bookRepository.findAllByTeacherId(teacherId);
-
+        List<Book> books = bookRepository.findAllByTeacherIdOrderByInfo(teacherId);
 
         // then
         assertThat(books.size()).isEqualTo(2);
@@ -78,22 +73,22 @@ class BookRepositoryTest {
 
     @Test
     @DisplayName("학생이 한 교재의 모든 단어를 조회할 수 있다")
-    void findAllWordByOneBookTest() {
+    void findAllContentByOneBookTest() {
         // given
         Student student = new Student();
         student.setStudentId("studentId1");
         student.setPassword("password1");
         Optional<Student> studentOptional = studentRepository.findOne(Example.of(student));
-        Student foundStudent = studentOptional.orElseThrow(NoSuchElementException::new);
+        Student foundStudent = studentOptional.orElseThrow();
 
         Long teacherId = foundStudent.getTeacher().getId();
 
         // when
         Optional<Book> bookOptional = bookRepository.findByBookInfo("book1", "chapter1", ContentType.WORD, teacherId);
-        Book foundBook = bookOptional.orElseThrow(NoSuchElementException::new);
-        List<Word> words = foundBook.getWords();
+        Book foundBook = bookOptional.orElseThrow();
+        List<Content> contents = foundBook.getContents();
 
         // then
-        assertThat(words.size()).isEqualTo(10);
+        assertThat(contents.size()).isEqualTo(10);
     }
 }

@@ -31,10 +31,13 @@ public class Teacher {
     2. 또한, 연관관계의 주인은 외래키가 참조하는 테이블에 있음을 기억하자
         -> 즉, student 객체에 setTeacher 를 꼭 해야 한다.
     3. OneToMany 는 컬럼이 아니다.
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    -> 위와 같이 cascade 와 orphanRemoval 을 사용하면 JPA 레벨에서 cascade 삭제와 수정을 실시하며, 이 경우 n + 1 현상이 발생한다.
      */
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     List<Student> students = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     List<Book> books = new ArrayList<>();
 }

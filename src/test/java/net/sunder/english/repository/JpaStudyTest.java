@@ -1,8 +1,9 @@
 package net.sunder.english.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sunder.english.domain.Student;
 import net.sunder.english.domain.Teacher;
-import net.sunder.english.repository.jpa.TeacherRepository;
+import net.sunder.english.domain.enumtype.Grade;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class JpaStudyTest {
 
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
     @Autowired
-    public JpaStudyTest(TeacherRepository teacherRepository) {
+    public JpaStudyTest(TeacherRepository teacherRepository, StudentRepository studentRepository) {
         this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Test
@@ -85,5 +88,34 @@ class JpaStudyTest {
         // then
         assertThatThrownBy(() -> teacherRepository.findOne(Example.of(savedTeacher)).get())
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("연관관계를 이용하여 참조 관계에 있는 객체도 저장할 수 있다")
+    void registerStudentTest() {
+        // given
+        Teacher teacher = new Teacher();
+        teacher.setTeacherId("newTeacher");
+        teacher.setPassword("1234");
+        teacher.setTeacherName("newTeacherName");
+
+        Student student = new Student();
+        student.setStudentId("newStudent");
+        student.setPassword("1234");
+        student.setStudentName("newStudentName");
+        student.setGrade(Grade.FIRST);
+        student.setTeacher(teacher);
+
+        teacher.getStudents().add(student);
+        teacherRepository.save(teacher);
+
+        // then
+        Student loginStudent = new Student();
+        loginStudent.setStudentId("newStudent");
+        loginStudent.setPassword("1234");
+        Student foundStudent = studentRepository.findOne(Example.of(loginStudent)).get();
+
+        // then
+        assertThat(foundStudent).isNotNull();
     }
 }
