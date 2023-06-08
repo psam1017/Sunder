@@ -44,7 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setTeacherId(loginId);
         teacher.setPassword(password);
         Optional<Teacher> teacherOptional = teacherRepository.findOne(Example.of(teacher));
-        return teacherOptional.orElseGet(Teacher::new);
+        return teacherOptional.orElse(null);
     }
 
     @Override

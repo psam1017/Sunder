@@ -13,7 +13,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -31,7 +30,7 @@ public class OnlyStudentServiceImpl implements OnlyStudentService {
         student.setPassword(password);
         Optional<Student> studentOptional = studentRepository.findOne(Example.of(student));
 
-        return studentOptional.orElseThrow(NoSuchElementException::new);
+        return studentOptional.orElse(null);
     }
 
     @Override

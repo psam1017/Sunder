@@ -13,6 +13,5 @@ public interface TeacherStudentService {
     void updateAccount(Teacher teacher, Long studentId, String studentName, String password, Grade grade);
     void withdraw(Teacher teacher, Long studentId);
     List<Student> getAllStudent(Long teacherId);
-
     Student getStudent(Long studentId);
 }

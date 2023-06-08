@@ -135,17 +135,15 @@ public class TeacherStudentController {
     public String withdraw(@SessionAttribute Long teacherId, @PathVariable Long studentId, Model model) {
         Student student = teacherStudentService.getStudent(studentId);
         Teacher teacher = teacherService.getTeacher(teacherId);
+        String studentName = student.getStudentName();
 
         if (student.getTeacher().getId().equals(teacherId)) {
             teacherStudentService.withdraw(teacher, studentId);
-            model.addAttribute("message", messageSource.getMessage("withdraw.student", null, null));
+            model.addAttribute("message", messageSource.getMessage("Withdraw.student", new Object[]{studentName}, null));
         }
         else{
             model.addAttribute("message", messageSource.getMessage("NotMatch.student", new Object[]{student}, null));
         }
         return "/teachers/students/list";
     }
-
-    // 학생 개인의 성적 조회, 성적 삭제 필요
-    
 }

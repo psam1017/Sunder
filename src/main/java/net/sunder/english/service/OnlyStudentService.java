@@ -11,7 +11,7 @@ public interface OnlyStudentService {
 
     Student login(String loginId, String password);
     Student getStudent(Long studentId);
-    Teacher getTeacher(Long teacherId);
+    Teacher getTeacher(Long teacherId); // session 에 teacherId 를 저장할 의도였으나, 실제로 사용하진 않음.
     List<Book> getBookList(Long teacherId);
     Book getBookByInfo(String title, String chapter, ContentType contentType, Long teacherId);
     Book getBookById(Long bookId);
