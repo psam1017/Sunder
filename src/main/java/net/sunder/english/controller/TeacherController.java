@@ -29,6 +29,13 @@ public class TeacherController {
     private final TeacherService teacherService;
     private final MessageSource messageSource;
 
+    @GetMapping("/teachers/main")
+    public String teacherMain(@SessionAttribute Long teacherId, Model model) {
+        Teacher teacher = teacherService.getTeacher(teacherId);
+        model.addAttribute("teacher", teacher);
+        return "/teachers/main";
+    }
+
     @GetMapping("/teachers/join")
     public String joinForm(@ModelAttribute TeacherJoinForm teacherJoinForm) {
         return "/teachers/join";
@@ -86,16 +93,18 @@ public class TeacherController {
                         @RequestParam String password,
                         @RequestParam(defaultValue = "/teachers/main") String redirectURL,
                         RedirectAttributes redirectAttributes,
+                        Model model,
                         HttpSession session) {
 
         String encodedPassword = Base64Utils.encodeToString(password.getBytes());
         Teacher loginTeacher = teacherService.login(teacherId, encodedPassword);
 
-        if(loginTeacher.getId() != null){
+        if(loginTeacher != null){
             session.setAttribute("teacherId", loginTeacher.getId());
             return "redirect:" + redirectURL;
         }
         else{
+            model.addAttribute("message", messageSource.getMessage("NotValid.login", null, null));
             redirectAttributes.addAttribute("redirectURL", redirectURL);
             return "/teachers/login";
         }
